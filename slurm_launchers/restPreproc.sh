@@ -2,11 +2,11 @@
 
 ###########################################################
 #                                                         #
-#		  Rest Preprocessing launcher             #
+#        Resting-State fMRI Preprocessing launcher        #
 #                                                         #
 ###########################################################
 #
-#SBATCH -J restPreproc # A single job name for the array
+#SBATCH -J rsfmriPreproc # A single job name for the array
 #SBATCH -n 1 # Number of cores
 #SBATCH -p medium # Partition
 #SBATCH --mem 12000 # Memory request
@@ -54,8 +54,8 @@ else
    echo "$patientname"
    echo "*********************"
 
-   singularity exec PROJECT_PATH/compneuro.simg ${preprocRoot}/registration.sh $patientname $mainRoot
-   singularity exec PROJECT_PATH/compneuro.simg ${preprocRoot}/rs_preproc.sh $patientname $mainRoot $physReg_technique $GSR_boolean $movReg_technique
+   singularity exec PROJECT_PATH/compneuro.simg ${preprocRoot}/rsfmri_registration.sh $patientname $mainRoot
+   singularity exec PROJECT_PATH/compneuro.simg ${preprocRoot}/rsfmri_preproc.sh $patientname $mainRoot $physReg_technique $GSR_boolean $movReg_technique
 
 fi
 

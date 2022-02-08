@@ -28,20 +28,20 @@ physReg_technique=$1
 movReg_technique=$2
 timestamp_initial=$(date +"%H:%M")
 touch /app/log/rsfMRIpreproc_${timestamp_initial}.txt
-
+restprep_folder=RestPrep_${physReg_technique}_${movReg_technique}
 while read line
 do
     participant=$( echo ${line} | awk '{ print $1 }')
 
-	if [  -f "/project/Preproc/RestPrep/${participant}/${participant}_preprocessed.nii.gz" ]; then
+	if [  -f "/project/Preproc/${restprep_folder}/${participant}/${participant}_preprocessed.nii.gz" ]; then
         echo "$participant already processed" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt
     else
         echo "*********************" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt
         echo "$participant" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt
         echo "*********************" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt
  
-        source /app/src/rsfmri_registration.sh $participant $timestamp_initial
-        source /app/src/rsfmri_preproc.sh $participant $physReg_technique $movReg_technique $timestamp_initial
+        source /app/src/rsfmri_registration.sh $participant $timestamp_initial $restprep_folder
+        source /app/src/rsfmri_preproc.sh $participant $physReg_technique $movReg_technique $timestamp_initial $restprep_folder
 
    fi
 	

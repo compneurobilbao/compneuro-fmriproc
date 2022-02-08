@@ -12,6 +12,8 @@
 patient=$1
 #Timestamp initial (using for log file name)
 timestamp_initial=$2
+#Folder to place the rsfmri preprocessing outputs
+restprep_folder=$3
 #Standard image Path
 standard=/app/brain_templates/MNI152_T1_3mm_brain.nii.gz
 #Anatomical image Path
@@ -19,13 +21,13 @@ anat_orig=/project/Preproc/Anat/${patient}_acpc/${patient}_acpc.nii.gz
 #Anatomical brain image Path
 anat_brain=/project/Preproc/BET/${patient}_T1w_brain.nii.gz 
 
-mkdir -p /project/Preproc/RestPrep/${patient}
-cd /project/Preproc/RestPrep/${patient}
+mkdir -p /project/Preproc/${restprep_folder}/${patient}
+cd /project/Preproc/${restprep_folder}/${patient}
 
 mkdir -p registration_folder
 
 fslreorient2std /project/data/${patient}/func/*.nii.gz rest_reor
-func_r=/project/Preproc/RestPrep/${patient}/rest_reor.nii.gz
+func_r=/project/Preproc/${restprep_folder}/${patient}/rest_reor.nii.gz
 
 #get the fmri volumes number
 nvol=$(fslval ${func_r} dim4) 

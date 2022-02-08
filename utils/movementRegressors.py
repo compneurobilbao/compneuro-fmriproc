@@ -109,26 +109,26 @@ def calc_censor_array(FD_file, DV_file, out_path, len_ts):
   
 
 
-def segment_removal(censors_vec,starting_vol):
+def segment_removal(censors_vec):
 	censors_new = np.zeros((5,1))
 
-	for idx in range(starting_vol,len(censors_vec),5):
+	for idx in range(10,len(censors_vec)+5,5):
 		segment = censors_vec[(idx-5):idx]
 		if (sum(segment) == len(segment)):
 			censors_new = np.append(censors_new,np.ones(len(segment)))
 		else:
 			censors_new = np.append(censors_new,np.zeros(len(segment)))
+			
 	new_file = os.path.join(out_path, 'CensoredFrames.1D')
 	np.savetxt(new_file, censors_new, fmt=str('%d'))
 
 
 #Main Function
-in_file = sys.argv[1]
-FD_file = sys.argv[2]
-DV_file = sys.argv[3]
-out_path = sys.argv[4]
-starting_vol = int(sys.argv[5])
+in_file = "mc/prefiltered_func_data_mcf.par"
+FD_file = "Nuisance_regression/motion_outliers_fd.txt"
+DV_file = "Nuisance_regression/motion_outliers_dvars.txt"
+out_path = "Nuisance_regression"
 
 ts_len = calc_friston_twenty_four(in_file, out_path)
 censors = calc_censor_array(FD_file, DV_file, out_path, ts_len)
-segment_removal(censors,starting_vol)
+segment_removal(censors)

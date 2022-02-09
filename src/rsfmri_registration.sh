@@ -53,3 +53,23 @@ c3d_affine_tool -ref ${anat_brain} -src example_func.nii.gz \
 
 c3d_affine_tool -ref example_func.nii.gz -src ${anat_brain} \
     anat2epi.mat -fsl2ras -oitk anat2epi.txt
+
+#generate masks for QA report
+#T1w brain mask
+fslmaths $anat_brain -bin anat_brain_mask.nii.gz
+#Generate anat2func image
+flirt -in anat_brain_mask.nii.gz -ref example_func.nii.gz -init anat2epi.mat \
+ -applyxfm -interp nearestneighbour -out anat2func_mask.nii.gz
+#Generate CSF and WM masks in the MNI space
+antsApplyTransforms -d 3 -r $standard \
+	-i /project/Preproc/ProbTissue/${patient}_T1w_brain_CSF.nii.gz -e 0 \
+	-t anat2standard1Warp.nii.gz \
+	-t anat2standard0GenericAffine.mat \
+	-o CSF2standard.nii.gz -v 1
+antsApplyTransforms -d 3 -r $standard \
+	-i /project/Preproc/ProbTissue/${patient}_T1w_brain_WM.nii.gz -e 0 \
+	-t anat2standard1Warp.nii.gz \
+	-t anat2standard0GenericAffine.mat \
+	-o WM2standard.nii.gz -v 1
+fslmaths CSF2standard.nii.gz -thr 0.66 -bin CSF2standard_mask.nii.gz
+fslmaths WM2standard.nii.gz -thr 0.66 -bin WM2standard_mask.nii.gz

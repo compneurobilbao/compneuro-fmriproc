@@ -29,6 +29,12 @@ movReg_technique=$2
 timestamp_initial=$(date +"%H:%M")
 touch /app/log/rsfMRIpreproc_${timestamp_initial}.txt
 restprep_folder=RestPrep_${physReg_technique}_${movReg_technique}
+mkdir -p /project/Preproc/${restprep_folder}/QA_report
+
+echo "SubjectID; Dice_anat2funcReg; Dice_func2mniReg; CSF_mask_quality; WM_mask_quality; \
+    FD_mean; FD_std; DVARS_mean; DVARS_std; FC_mean_noDenoised; FC_std_noDenoised; \
+    FC_mean_Denoised; FC_std_Denoised; FC_mean_DenoisedGSR; FC_std_DenoisedGSR"
+    
 while read line
 do
     participant=$( echo ${line} | awk '{ print $1 }')

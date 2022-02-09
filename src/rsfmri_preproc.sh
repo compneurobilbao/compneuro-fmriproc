@@ -36,9 +36,11 @@ fslmaths ${func} prefiltered_func_data -odt float
 
 #Motion outliers
 #Framewise displacement calculated following (Power et al, NeuroImage, 59(3), 2012), if you want a less restricted threshold use 0.5
-fsl_motion_outliers -i prefiltered_func_data -o Nuisance_regression/motion_outliers_fd.txt --fd --thresh=0.2
+fsl_motion_outliers -i prefiltered_func_data -o Nuisance_regression/motion_outliers_fd.txt --fd --thresh=0.2 \
+	-s Nuisance_regression/fd.txt
 #DVARS calculated following (see Power et al, NeuroImage, 59(3), 2012)
-fsl_motion_outliers -i prefiltered_func_data -o Nuisance_regression/motion_outliers_dvars.txt --dvars --thresh=50
+fsl_motion_outliers -i prefiltered_func_data -o Nuisance_regression/motion_outliers_dvars.txt --dvars \
+	--thresh=50 -s Nuisance_regression/dvars.txt
 
 #motion correction parameters calculation
 timepoint=$(date +"%H:%M")
@@ -258,6 +260,16 @@ echo "$timepoint    **Performing Spatial smoothing...**" >> /app/log/rsfMRIprepr
 3dBlurToFWHM -FWHM 6 -mask /app/brain_templates/MNI152_T1_3mm_brain_mask.nii.gz -prefix ${patient}_preprocessed.nii.gz -input ${patient}_denoised_st.nii.gz
 #Smoothing GSR-data with gaussian kernel of 6mm FWHM
 3dBlurToFWHM -FWHM 6 -mask /app/brain_templates/MNI152_T1_3mm_brain_mask.nii.gz -prefix ${patient}_preprocessed_GSR.nii.gz -input ${patient}_denoised_GSR_st.nii.gz
+
+#Filtering data without denoising for QA checks
+#Denoising and bandpass filtering data
+3dTproject -input filtered_func_data.nii.gz \
+	-polort 0 -TR $TR -bandpass 0.01 0.08 \
+	-prefix ${patient}_noDenoised.nii.gz 
+#Transforming to MNI template the no denoised data
+WarpTimeSeriesImageMultiTransform 4 ${patient}_noDenoised.nii.gz ${patient}_noDenoised_st.nii.gz \
+	-R /app/brain_templates/MNI152_T1_3mm_brain.nii.gz \
+	registration_folder/anat2standard1Warp.nii.gz registration_folder/anat2standard0GenericAffine.mat registration_folder/epi2anat.txt
 
 timepoint=$(date +"%H:%M")
 echo "$timepoint    **END**" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt

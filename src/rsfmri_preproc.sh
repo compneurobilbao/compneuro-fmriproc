@@ -181,10 +181,11 @@ then
 	source activate ICAaroma
 
 	#Calculating movement regressors and scrubbing frames
-	python /app/utils/movementRegressors.py	
+	#If you want to remove 5-length frames with a contamined frame, put the boolean argument to 1 (0 by default)
+	python /app/utils/movementRegressors.py	0
 
 	#Concatenating the confounds to regress (24 movements time courses + physiological timecourses)
-	python /project/Scripts/confoundsMatrix.py Nuisance_regression/movementRegressors_24.1D 0 
+	python /app/utils/confoundsMatrix.py Nuisance_regression/movementRegressors_24.1D 0 
 
 	timepoint=$(date +"%H:%M")
 	echo "$timepoint    **Cleaning data" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt	
@@ -212,10 +213,11 @@ then
 	source activate ICAaroma
 	
 	#Calculating movement regressors and scrubbing frames
-	python /app/utils/movementRegressors.py	
+	#If you want to remove 5-length frames with a contamined frame, put the boolean argument to 1 (0 by default)
+	python /app/utils/movementRegressors.py	0
 
 	#Concatenating the confounds to regress (6 movements time courses + physiological timecourses)
-	python /project/Scripts/confoundsMatrix.py mc/prefiltered_func_data_mcf.par 0 
+	python /app/utils/confoundsMatrix.py mc/prefiltered_func_data_mcf.par 0 
 
 	timepoint=$(date +"%H:%M")
 	echo "$timepoint    **Cleaning data" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt	

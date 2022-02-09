@@ -75,7 +75,7 @@ def censor_mat_calc (cols):
 	censor_mat = (~censor_np.astype(bool)).astype(int)
 	return censor_mat
 	
-def calc_censor_array(FD_file, DV_file, out_path, len_ts):
+def calc_censor_array(FD_file, DV_file, len_ts):
 
 
 	if (os.path.exists(FD_file) and os.path.exists(DV_file)) :
@@ -118,9 +118,9 @@ def segment_removal(censors_vec):
 			censors_new = np.append(censors_new,np.ones(len(segment)))
 		else:
 			censors_new = np.append(censors_new,np.zeros(len(segment)))
-			
-	new_file = os.path.join(out_path, 'CensoredFrames.1D')
-	np.savetxt(new_file, censors_new, fmt=str('%d'))
+	
+	return censors_new
+	
 
 
 #Main Function
@@ -128,7 +128,16 @@ in_file = "mc/prefiltered_func_data_mcf.par"
 FD_file = "Nuisance_regression/motion_outliers_fd.txt"
 DV_file = "Nuisance_regression/motion_outliers_dvars.txt"
 out_path = "Nuisance_regression"
+frameRemoval_bool = int(sys.argv[1])
 
 ts_len = calc_friston_twenty_four(in_file, out_path)
-censors = calc_censor_array(FD_file, DV_file, out_path, ts_len)
-segment_removal(censors)
+censors = calc_censor_array(FD_file, DV_file, ts_len)
+
+if frameRemoval_bool == 1:
+	censor_array = segment_removal(censors)
+	censor_file = os.path.join(out_path, 'CensoredFrames.1D')
+	np.savetxt(censor_file, censor_array, fmt=str('%d'))
+else:
+	censor_file = os.path.join(out_path, 'CensoredFrames.1D')
+	np.savetxt(censor_file, censors, fmt=str('%d'))
+

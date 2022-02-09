@@ -273,7 +273,7 @@ WarpTimeSeriesImageMultiTransform 4 ${patient}_noDenoised.nii.gz ${patient}_noDe
 #Quality checks
 source activate neuro
 
-QA_report=$(python /app/src/utils/qa_plots.py $restprep_folder $patient)
+QA_report=$(python /app/utils/qa_plots.py $restprep_folder $patient)
 echo $QA_report >> /project/Preproc/${restprep_folder}/QA_report/QA_measures.csv
 
 timepoint=$(date +"%H:%M")

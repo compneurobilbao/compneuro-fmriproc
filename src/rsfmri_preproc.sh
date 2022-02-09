@@ -270,6 +270,11 @@ echo "$timepoint    **Performing Spatial smoothing...**" >> /app/log/rsfMRIprepr
 WarpTimeSeriesImageMultiTransform 4 ${patient}_noDenoised.nii.gz ${patient}_noDenoised_st.nii.gz \
 	-R /app/brain_templates/MNI152_T1_3mm_brain.nii.gz \
 	registration_folder/anat2standard1Warp.nii.gz registration_folder/anat2standard0GenericAffine.mat registration_folder/epi2anat.txt
+#Quality checks
+source activate neuro
+
+QA_report=$(python /app/src/utils/qa_plots.py $restprep_folder $patient)
+echo $QA_report >> /project/Preproc/${restprep_folder}/QA_report/QA_measures.csv
 
 timepoint=$(date +"%H:%M")
 echo "$timepoint    **END**" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt

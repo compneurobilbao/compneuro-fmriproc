@@ -78,11 +78,11 @@ By default, the volumes with a Framewise Displacement (FD) greater than 0.2 or D
 
 ## Ouputs
 
-The main outputs will be placed in the folder */path/to/your/project/Preproc/RestPrep_<physReg_technique>_<movReg_technique>*
+The main outputs will be placed in the folder `/path/to/your/project/Preproc/RestPrep_<physReg_technique>_<movReg_technique>`
 
 Inside, you will find a subfolder for each subject where the preprocessed files are **sub-XXX_preprocessed.nii.gz** and  **sub-XXX_preprocessed_GSR.nii.gz**.
 
-Also, in the *RestPrep_<physReg_technique>_<movReg_technique>* folder there will be a subfolder with quality checks called*QA_report*. Inside, there will be a *.csv* with different QA measures (you can use the information to discard some participants whose images has been acquired with bad quality or broad head movements) and a *.png* image for each participant as follows:
+Also, in the `RestPrep_<physReg_technique>_<movReg_technique>` folder there will be a subfolder with quality checks called `QA_report`. Inside, there will be a *.csv* with different QA measures (you can use the information to discard some participants whose images has been acquired with bad quality or broad head movements) and a *.png* image for each participant as follows:
 
 ![QA plot example](docs/QA_plot_example.png)
 In the left side you have a carpet plot of the image before and after preprocessing and you can check if the large nuinsances has been removed. In the right side (top part) you can check if the image is well registered to the standard template and if it is well adjusted to a standard brain partition. In the right side (bottom part) are represented the functional connectivity distributions of the image with and without preprocessing to see if the inflated correlations due to movement decrease

@@ -8,7 +8,7 @@
 
 Usage() {
     echo ""
-    echo "Usage: restPreproc <physReg_technique>  <movReg_technique>"
+    echo "Usage: rsfmri_launcher <physReg_technique>  <movReg_technique>"
     echo ""
 	echo "physReg_technique: physiological noise removal technique. Options:"
     echo "1 -- 2phys: WM and CSF mean signal removal"

@@ -1,5 +1,5 @@
-# compneuro-rsfmriproc
-This repo conatins the Resting State fMRI preprocessing and analysis code used by the Computational Neuroimaging Lab at Biocruces Bizkaia HRI. 
+# compneuro-fmriproc
+This repo conatins the fMRI preprocessing and analysis code used by the Computational Neuroimaging Lab at Biocruces Bizkaia HRI. 
 
 ![compneuro logo](docs/compneuroLogo_r.png)
 
@@ -17,7 +17,7 @@ But, if you want to install all neuroimaging software used to preprocess the dat
 * [AFNI](https://afni.nimh.nih.gov/)
 * [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki)
 * [Convert3D](http://www.itksnap.org/pmwiki/pmwiki.php?n=Convert3D.Documentation)
-
+* [Nilearn](https://nilearn.github.io/stable/index.html)
 
 ### Data structure
 Raw data should be stored in [BIDS format](https://bids.neuroimaging.io/) inside a folder named "data"
@@ -56,7 +56,7 @@ sudo make dev
 
 ### Usage
 ```bash
-./restPreproc <physReg_technique> <movReg_technique>
+./restPreproc <physReg_technique> <movReg_technique> <task_class>
 ```
 
 For the input parameter `physReg_technique` you have two options:
@@ -73,16 +73,17 @@ And for the parameter `movReg_technique` you have three options:
 
 By default, the volumes with a Framewise Displacement (FD) greater than 0.2 or DVAS greater than 0.5% (see https://doi.org/10.1016/j.neuroimage.2011.10.018) are marked as spureous. The final censored volumes are such marked as spureous, but also their previous volume and the two following.
 
+`task_class` is just the name of the task you want to process, the name should be the same of the fMRI image `sub-XXX_task-<task_class>_bold.nii.gz`
 
 
 
 ## Ouputs
 
-The main outputs will be placed in the folder `/path/to/your/project/Preproc/RestPrep_<physReg_technique>_<movReg_technique>`
+The main outputs will be placed in the folder `/path/to/your/project/Preproc/<task_class>_Prep_<physReg_technique>_<movReg_technique>`
 
 Inside, you will find a subfolder for each subject where the preprocessed files are **sub-XXX_preprocessed.nii.gz** and  **sub-XXX_preprocessed_GSR.nii.gz**.
 
-Also, in the `RestPrep_<physReg_technique>_<movReg_technique>` folder there will be a subfolder with quality checks called `QA_report`. Inside, there will be a *.csv* with different QA measures (you can use the information to discard some participants whose images has been acquired with bad quality or broad head movements) and a *.png* image for each participant as follows:
+Also, in the `<task_class>_Prep_<physReg_technique>_<movReg_technique>` folder there will be a subfolder with quality checks called `QA_report`. Inside, there will be a *.csv* with different QA measures (you can use the information to discard some participants whose images has been acquired with bad quality or broad head movements) and a *.png* image for each participant as follows:
 
 ![QA plot example](docs/QA_plot_example.png)
 In the left side you have a carpet plot of the image before and after preprocessing and you can check if the large nuinsances has been removed. In the right side (top part) you can check if the image is well registered to the standard template and if it is well adjusted to a standard brain partition. In the right side (bottom part) are represented the functional connectivity distributions of the image with and without preprocessing to see if the inflated correlations due to movement decrease

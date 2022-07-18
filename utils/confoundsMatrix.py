@@ -2,8 +2,12 @@ import numpy as np
 import os
 import sys
 import pandas as pd
+from nilearn.glm.first_level import make_first_level_design_matrix
 
 aroma_bool = int(sys.argv[2])
+subject = sys.argv[3]
+task_class = sys.argv[4]
+TR = float(sys.argv[5])
 
 gs = np.genfromtxt("Nuisance_regression/GSR.1D")
 wm = np.genfromtxt("Nuisance_regression/wm_vec.1D")
@@ -26,11 +30,30 @@ else:
 
 dim_phys = len(wm.shape)
 if dim_phys == 1:
-	nuisances = np.concatenate((demean_mov, demean_wm[:,None], demean_csf[:,None]), axis=1)
-	nuisancesGSR = np.concatenate((demean_mov, demean_wm[:,None], demean_csf[:,None], demean_gs[:,None]), axis=1)
+	if 'rest' in task_class:
+		nuisances = np.concatenate((demean_mov, demean_wm[:,None], demean_csf[:,None]), axis=1)
+		nuisancesGSR = np.concatenate((demean_mov, demean_wm[:,None], demean_csf[:,None], demean_gs[:,None]), axis=1)	
+	else:
+		Nvol = len(gs)
+		frame_times = np.array(range(0,Nvol))*TR
+		taskdata = pd.read_csv('/project/data/' + subject + '/func/' + subject + '_task-' + task_class + '_events.tsv', sep = '\t')
+		desing_events = make_first_level_design_matrix(frame_times, taskdata, hrf_model='glover', drift_model = None)
+		taskevents = np.array(pd.DataFrame(desing_events[np.unique(taskdata['trial_type'])]))
+		nuisances = np.concatenate((demean_mov, taskevents, demean_wm[:,None], demean_csf[:,None]), axis=1)
+		nuisancesGSR = np.concatenate((demean_mov, taskevents, demean_wm[:,None], demean_csf[:,None], demean_gs[:,None]), axis=1)
+
 else:
-	nuisances = np.concatenate((demean_mov, demean_wm, demean_csf), axis=1)
-	nuisancesGSR = np.concatenate((demean_mov, demean_wm, demean_csf, demean_gs[:,None]), axis=1)
+	if 'rest' in task_class:
+		nuisances = np.concatenate((demean_mov, demean_wm, demean_csf), axis=1)
+		nuisancesGSR = np.concatenate((demean_mov, demean_wm, demean_csf, demean_gs[:,None]), axis=1)
+	else:
+		Nvol = len(gs)
+		frame_times = np.array(range(0,Nvol))*TR
+		taskdata = pd.read_csv('/project/data/' + subject + '/func/' + subject + '_task-' + task_class + '_events.tsv', sep = '\t')
+		desing_events = make_first_level_design_matrix(frame_times, taskdata, hrf_model='glover', drift_model = None)
+		taskevents = np.array(pd.DataFrame(desing_events[np.unique(taskdata['trial_type'])]))
+		nuisances = np.concatenate((demean_mov, taskevents, demean_wm, demean_csf), axis=1)
+		nuisancesGSR = np.concatenate((demean_mov, taskevents, demean_wm, demean_csf, demean_gs[:,None]), axis=1)
 
 
 nuisances_file = "Nuisance_regression/Confounds.1D"

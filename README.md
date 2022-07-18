@@ -56,7 +56,11 @@ sudo make dev
 
 ### Usage
 ```bash
+<<<<<<< HEAD
 ./restPreproc <physReg_technique> <movReg_technique> <task_class>
+=======
+/app/src/rsfmri_launcher.sh <physReg_technique> <movReg_technique>
+>>>>>>> fe3dbb367711642d6f3948cc29064476170c2f1f
 ```
 
 For the input parameter `physReg_technique` you have two options:

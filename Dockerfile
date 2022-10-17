@@ -286,3 +286,6 @@ RUN echo '{ \
     \n    ] \
     \n  ] \
     \n}' > /neurodocker/neurodocker_specs.json
+
+WORKDIR /app
+COPY . /app

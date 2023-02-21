@@ -20,9 +20,19 @@ prep_folder=$5
 task_class=$6
 #Functional image Path
 func=/project/Preproc/${prep_folder}/${patient}/fmri_reor.nii.gz
+func_json=/project/data/${patient}/func/sub-*_task-${task_class}_*.json
+
 #Slice order and slice time files
+if [  -f $func_json ]; then
+	jq .SliceTiming $func_json | sed '1d;$d' | sed 's/ //g' | sed 's/,//g' > /project/data/${patient}/func/${task_class}_slice_timing.txt
+else
+	"WARNING: JSON file not found" >> /app/log/fMRIpreproc_${timestamp_initial}.txt
+fi
+
 slice_order=/project/data/slice_order_${task_class}.txt
-slice_time=/project/data/slice_timing_${task_class}.txt  
+slice_time=/project/data/slice_timing_${task_class}.txt 
+slice_time_subject=/project/data/${patient}/func/${task_class}_slice_timing.txt
+
 #Repetition time
 TR=$(fslval ${func} pixdim4) 
 
@@ -41,7 +51,9 @@ fslmaths ${func} prefiltered_func_data -odt float
 timepoint=$(date +"%H:%M")
 echo "$timepoint    **doing slice time correction...**" >> /app/log/fMRIpreproc_${timestamp_initial}.txt
 
-if [  -f $slice_order ]; then
+if [  -f $slice_time_subject ]; then
+	slicetimer -i prefiltered_func_data --out=prefiltered_func_data_st -r ${TR} --tcustom=${slice_time_subject}
+elif [  -f $slice_order ]; then
     slicetimer -i prefiltered_func_data --out=prefiltered_func_data_st -r ${TR} --ocustom=${slice_order}
 elif [  -f $slice_time ]; then
 	slicetimer -i prefiltered_func_data --out=prefiltered_func_data_st -r ${TR} --tcustom=${slice_time}

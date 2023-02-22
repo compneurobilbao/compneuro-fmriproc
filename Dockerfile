@@ -55,6 +55,7 @@ RUN apt-get update -qq \
            libgomp1 \
            libjpeg62 \
            libxm4 \
+           jq \
            netpbm \
            tcsh \
            xfonts-base \

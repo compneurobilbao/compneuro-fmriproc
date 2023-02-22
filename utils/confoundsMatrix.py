@@ -18,10 +18,9 @@ demean_wm = wm - wm.mean(axis=0)
 demean_csf = csf - csf.mean(axis=0)
 
 if aroma_bool == 1:
-	aroma_mix = pd.read_csv(sys.argv[1], sep="  ", header=None)
-	aroma_noise_components = pd.read_csv("ICA_AROMA/classified_motion_ICs.txt", sep=",", header=None, engine='python')
-	aroma_noise_components_index = aroma_noise_components - 1
-	aroma_noise = aroma_mix.iloc[:,aroma_mix.index.isin(aroma_noise_components_index)]
+	aroma_mix = pd.read_csv(sys.argv[1], sep="  ", header=None, engine="python")
+	aroma_noise_components = np.genfromtxt("ICA_AROMA/classified_motion_ICs.txt", delimiter=",")
+	aroma_noise = aroma_mix.iloc[:,aroma_noise_components-1]
 	aroma_noise_matrix = aroma_noise.values
 	demean_mov = aroma_noise_matrix - aroma_noise_matrix.mean(axis=0)
 else:

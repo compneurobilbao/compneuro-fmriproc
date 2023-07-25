@@ -40,13 +40,13 @@ midvol=$(echo "${nvol} / 2" | bc -l)
 fslroi ${func_r} registration_folder/example_func ${midvol} 1 
 cd registration_folder
 timepoint=$(date +"%H:%M")
-echo "$timepoint    **Doing transformation between functional and anatomical images...**" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt
+echo "$timepoint    **Doing transformation between functional and anatomical images...**" >> /app/log/fMRIpreproc_${timestamp_initial}.txt
 #generate transformation matrix from fmri to anat
 epi_reg --epi=example_func --t1=${anat_orig} --t1brain=${anat_brain} --out=epi2anat
 #generate transformation matrix from anat to fmri
 convert_xfm -inverse -omat anat2epi.mat epi2anat.mat 
 timepoint=$(date +"%H:%M")
-echo "$timepoint    **Doing transformation between standard and anatomical images...**" >> /app/log/rsfMRIpreproc_${timestamp_initial}.txt
+echo "$timepoint    **Doing transformation between standard and anatomical images...**" >> /app/log/fMRIpreproc_${timestamp_initial}.txt
 #generate transformation matrix and warp from anat to standard
 antsRegistrationSyN.sh -d 3 -m ${anat_brain} -f ${standard} -o anat2standard
 #generate matrices compatibles with convert3d

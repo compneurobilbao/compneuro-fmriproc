@@ -8,7 +8,7 @@
 # 
 #     https://github.com/ReproNim/neurodocker
 
-FROM debian:stretch
+FROM debian:bullseye
 
 USER root
 
@@ -24,6 +24,7 @@ RUN export ND_ENTRYPOINT="/neurodocker/startup.sh" \
            bzip2 \
            ca-certificates \
            curl \
+           wget \
            locales \
            unzip \
     && apt-get clean \
@@ -62,12 +63,10 @@ RUN apt-get update -qq \
            xvfb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && curl -sSL --retry 5 -o /tmp/toinstall.deb http://mirrors.kernel.org/debian/pool/main/libx/libxp/libxp6_1.0.2-2_amd64.deb \
-    && dpkg -i /tmp/toinstall.deb \
-    && rm /tmp/toinstall.deb \
-    && curl -sSL --retry 5 -o /tmp/toinstall.deb http://snapshot.debian.org/archive/debian-security/20160113T213056Z/pool/updates/main/libp/libpng/libpng12-0_1.2.49-1%2Bdeb7u2_amd64.deb \
-    && dpkg -i /tmp/toinstall.deb \
-    && rm /tmp/toinstall.deb \
+    && wget https://apt.ligo-wa.caltech.edu:8443/debian/pool/stretch/libxp6/libxp6_1.0.2-2_amd64.deb \
+    && dpkg -i libxp6_1.0.2-2_amd64.deb \
+    && wget https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/15108504/+files/libpng12-0_1.2.54-1ubuntu1.1_amd64.deb \
+    && dpkg -i libpng12-0_1.2.54-1ubuntu1.1_amd64.deb \
     && apt-get install -f \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
@@ -134,12 +133,6 @@ RUN apt-get update -qq \
     && /opt/fsl-6.0.1/fslpython/bin/conda install -n fslpython -c conda-forge -y deprecation==1.* \
     && echo "Removing bundled with FSLeyes libz likely incompatible with the one from OS" \
     && rm -f /opt/fsl-6.0.1/bin/FSLeyes/libz.so.1
-
-ENV PATH="/opt/mrtrix3-3.0_RC3/bin:$PATH"
-RUN echo "Downloading MRtrix3 ..." \
-    && mkdir -p /opt/mrtrix3-3.0_RC3 \
-    && curl -fsSL --retry 5 https://dl.dropbox.com/s/2oh339ehcxcf8xf/mrtrix3-3.0_RC3-Linux-centos6.9-x86_64.tar.gz \
-    | tar -xz -C /opt/mrtrix3-3.0_RC3 --strip-components 1
 
 ENV C3DPATH="/opt/convert3d-1.0.0" \
     PATH="/opt/convert3d-1.0.0/bin:$PATH"
@@ -287,3 +280,6 @@ RUN echo '{ \
     \n    ] \
     \n  ] \
     \n}' > /neurodocker/neurodocker_specs.json
+
+WORKDIR /app
+COPY . /app

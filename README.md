@@ -91,9 +91,9 @@ In the left side you have a carpet plot of the image before and after preprocess
 ## Cite
 Please, if you want to use this code in your publications, cite this work:
 
-**Multimodal lesion network mapping to predict sensorimotor behavior in stroke patients**.
+**Multimodal and multidomain lesion network mapping enhances prediction of sensorimotor behavior in stroke patients**.
 Antonio Jimenez-Marin, Nele De Bruyn, Jolien Gooijers, Alberto Llera, Sarah Meyer, Kaat Alaerts, Geert Verheyden, Stephan P. Swinnen, Jesus M. Cortes.
-*bioRxiv*. 2021. doi: https://doi.org/10.1101/2021.12.23.473973
+*SciRep*. 2022. doi: https://doi.org/10.1038/s41598-022-26945-x
 
 
 

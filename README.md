@@ -22,7 +22,7 @@ But, if you want to install all neuroimaging software used to preprocess the dat
 ### Data structure
 Raw data should be stored in [BIDS format](https://bids.neuroimaging.io/) inside a folder named "data"
 
-Also, You need a folder with the brain extracted images and a folder with the tissue-priors segmentations. You can use our pipeline also to a better integration! [compneuro-anatpreproc](https://github.com/ajimenezmarin/compneuro-anatproc). But, if you want to use another software (or your own code), you need the following folder structure and files:
+Also, You need a folder with the brain extracted images and a folder with the tissue-priors segmentations. You can use our pipeline also to a better integration! [compneuro-anatpreproc](https://github.com/compneurobilbao/compneuro-anatproc). But, if you want to use another software (or your own code), you need the following folder structure and files:
 
 ```
 /path/to/your/project/

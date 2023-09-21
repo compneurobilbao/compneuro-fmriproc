@@ -19,7 +19,7 @@ task_class=$4
 #Standard image Path
 standard=/app/brain_templates/MNI152_T1_3mm_brain.nii.gz
 #Anatomical image Path
-anat_orig=/project/Preproc/Anat/${patient}_acpc/${patient}_acpc.nii.gz
+anat_orig=/project/Preproc/Anat/${patient}_acpc/${patient}_biascorr.nii.gz
 #Anatomical brain image Path
 anat_brain=/project/Preproc/BET/${patient}_T1w_brain.nii.gz 
 

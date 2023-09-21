@@ -71,7 +71,7 @@ And for the parameter `movReg_technique` you have three options:
 * **6mov**: remove the 6 motion time-courses and perform scrubbing interpolating the censored volumes
 * **24mov**: remove the 6 motion time-courses and its first and second derivatives, and perform scrubbing interpolating the censored volumes
 
-By default, the volumes with a Framewise Displacement (FD) greater than 0.2 or DVAS greater than 0.5% (see https://doi.org/10.1016/j.neuroimage.2011.10.018) are marked as spureous. The final censored volumes are such marked as spureous, but also their previous volume and the two following.
+By default, the volumes with a Framewise Displacement (FD) greater than 0.2 or DVARS greater than 0.5% (see https://doi.org/10.1016/j.neuroimage.2011.10.018) are marked as spureous. The final censored volumes are such marked as spureous, but also their previous volume and the two following.
 
 `task_class` is just the name of the task you want to process, the name should be the same of the fMRI image `sub-XXX_task-<task_class>_bold.nii.gz`
 

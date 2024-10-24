@@ -80,19 +80,23 @@ RUN apt-get update -qq \
     && curl -fsSL --retry 5 https://afni.nimh.nih.gov/pub/dist/tgz/linux_openmp_64.tgz \
     | tar -xz -C /opt/afni-latest --strip-components 1
 
-ENV ANTSPATH="/opt/ants-2.3.1" \
-    PATH="/opt/ants-2.3.1:$PATH"
-RUN echo "Downloading ANTs ..." \
-    && mkdir -p /opt/ants-2.3.1 \
-    && curl -fsSL --retry 5 https://dl.dropbox.com/s/1xfhydsf4t4qoxg/ants-Linux-centos6_x86_64-v2.3.1.tar.gz \
-    | tar -xz -C /opt/ants-2.3.1 --strip-components 1
+ENV ANTSPATH="/opt/ants-2.4.1" \
+    PATH="/opt/ants-2.4.1:$PATH"
+    ENV ANTSPATH="/opt/ants-2.4.1" \
+    PATH="/opt/ants-2.4.1:$PATH"
 
-ENV FSLDIR="/opt/fsl-6.0.1" \
-    PATH="/opt/fsl-6.0.1/bin:$PATH" \
+RUN echo "Downloading ANTs ..." \
+    && curl -fsSL --retry 5 https://github.com/ANTsX/ANTs/releases/download/v2.4.1/ants-2.4.1-centos7-X64-gcc.zip -o ants.zip \
+    && unzip ants.zip -d /opt \
+    && mv /opt/ants-2.4.1/bin/* /opt/ants-2.4.1/ \
+    && rm ants.zip
+
+ENV FSLDIR="/opt/fsl-6.0.7.6" \
+    PATH="/opt/fsl-6.0.7.6/bin:$PATH" \
     FSLOUTPUTTYPE="NIFTI_GZ" \
     FSLMULTIFILEQUIT="TRUE" \
-    FSLTCLSH="/opt/fsl-6.0.1/bin/fsltclsh" \
-    FSLWISH="/opt/fsl-6.0.1/bin/fslwish" \
+    FSLTCLSH="/opt/fsl-6.0.7.6/bin/fsltclsh" \
+    FSLWISH="/opt/fsl-6.0.7.6/bin/fslwish" \
     FSLLOCKDIR="" \
     FSLMACHINELIST="" \
     FSLREMOTECALL="" \
@@ -115,24 +119,13 @@ RUN apt-get update -qq \
            libxrandr2 \
            libxrender1 \
            libxt6 \
+           python3 \
            sudo \
            wget \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && echo "Downloading FSL ..." \
-    && mkdir -p /opt/fsl-6.0.1 \
-    && curl -fsSL --retry 5 https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-6.0.1-centos6_64.tar.gz \
-    | tar -xz -C /opt/fsl-6.0.1 --strip-components 1 \
-    && sed -i '$iecho Some packages in this Docker container are non-free' $ND_ENTRYPOINT \
-    && sed -i '$iecho If you are considering commercial use of this container, please consult the relevant license:' $ND_ENTRYPOINT \
-    && sed -i '$iecho https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Licence' $ND_ENTRYPOINT \
-    && sed -i '$isource $FSLDIR/etc/fslconf/fsl.sh' $ND_ENTRYPOINT \
-    && echo "Installing FSL conda environment ..." \
-    && bash /opt/fsl-6.0.1/etc/fslconf/fslpython_install.sh -f /opt/fsl-6.0.1 \
-    && echo "Downgrading deprecation module per https://github.com/kaczmarj/neurodocker/issues/271#issuecomment-514523420" \
-    && /opt/fsl-6.0.1/fslpython/bin/conda install -n fslpython -c conda-forge -y deprecation==1.* \
-    && echo "Removing bundled with FSLeyes libz likely incompatible with the one from OS" \
-    && rm -f /opt/fsl-6.0.1/bin/FSLeyes/libz.so.1
+    && rm -rf /var/lib/apt/lists/*
+RUN echo "Installing FSL ..." \
+    && curl -fsSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/fslinstaller.py | python3 - -d /opt/fsl-6.0.7.6 -V 6.0.7.6
 
 ENV C3DPATH="/opt/convert3d-1.0.0" \
     PATH="/opt/convert3d-1.0.0/bin:$PATH"
@@ -161,12 +154,14 @@ RUN export PATH="/opt/miniconda-latest/bin:$PATH" \
     && conda config --system --prepend channels conda-forge \
     && conda config --system --set auto_update_conda false \
     && conda config --system --set show_channel_urls true \
-    && sync && conda clean -y --all && sync \
-    && conda create -y -q --name ICAaroma \
+    && sync && conda clean -y --all && sync 
+RUN conda create -y -q --name ICAaroma \
     && conda install -y -q --name ICAaroma \
            "python=2.7" \
     && sync && conda clean -y --all && sync \
     && bash -c "source activate ICAaroma \
+    && curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py \
+    && python get-pip.py --force-reinstall \
     &&   pip install --no-cache-dir  \
              "future" \
              "matplotlib==2.2" \
@@ -184,8 +179,8 @@ RUN conda create -y -q --name neuro \
            "matplotlib" \
            "scikit-learn" \
            "seaborn" \
-    && sync && conda clean -y --all && sync \
-    && bash -c "source activate neuro \
+    && sync && conda clean -y --all && sync 
+RUN bash -c "source activate neuro \
     &&   pip install --no-cache-dir  \
              "nipype" \
              "nibabel" \
@@ -210,7 +205,7 @@ RUN echo '{ \
     \n    [ \
     \n      "ants", \
     \n      { \
-    \n        "version": "2.3.1", \
+    \n        "version": "2.4.1", \
     \n        "method": "binaries" \
     \n      } \
     \n    ], \
@@ -280,6 +275,3 @@ RUN echo '{ \
     \n    ] \
     \n  ] \
     \n}' > /neurodocker/neurodocker_specs.json
-
-WORKDIR /app
-COPY . /app

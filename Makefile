@@ -1,5 +1,5 @@
 
-IMAGE_NAME := compneuro
+IMAGE_NAME := compneuro-fmriproc
 
 .PHONY: build
 build:

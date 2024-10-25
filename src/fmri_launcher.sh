@@ -29,7 +29,8 @@ physReg_technique=$1
 movReg_technique=$2
 task_class=$3
 timestamp_initial=$(date +"%H:%M")
-touch /app/log/fMRIpreproc_${timestamp_initial}.txt
+mkdir -p /project/log
+touch /project/log/fMRIpreproc_${timestamp_initial}.txt
 prep_folder=${task_class}_Prep_${physReg_technique}_${movReg_technique}
 mkdir -p /project/Preproc/${prep_folder}/QA_report
 
@@ -42,18 +43,18 @@ do
     participant=$( echo ${line} | awk '{ print $1 }')
 
 	if [  -f "/project/Preproc/${prep_folder}/${participant}/${participant}_preprocessed.nii.gz" ]; then
-        echo "$participant already processed" >> /app/log/fMRIpreproc_${timestamp_initial}.txt
+        echo "$participant already processed" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
     else
-        echo "*********************" >> /app/log/fMRIpreproc_${timestamp_initial}.txt
-        echo "$participant" >> /app/log/fMRIpreproc_${timestamp_initial}.txt
-        echo "*********************" >> /app/log/fMRIpreproc_${timestamp_initial}.txt
+        echo "*********************" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
+        echo "$participant" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
+        echo "*********************" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
  
         source /app/src/fmri_registration.sh $participant $timestamp_initial $prep_folder $task_class
         source /app/src/fmri_preproc.sh $participant $physReg_technique $movReg_technique $timestamp_initial $prep_folder $task_class
 
    fi
 	
-done < /project/data/participants.tsv
+done < <(tail -n +2 /project/data/participants.tsv)
 
 
 

@@ -25,6 +25,12 @@ func_json=/project/data/${patient}/func/sub-*_task-${task_class}_*.json
 #Slice order and slice time files
 if [  -f $func_json ]; then
 	jq .SliceTiming $func_json | sed '1d;$d' | sed 's/ //g' | sed 's/,//g' > /project/data/${patient}/func/${task_class}_slice_timing.txt
+	if [ -s /project/data/${patient}/func/${task_class}_slice_timing.txt ]; then
+		echo "Slice timing file created" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
+	else
+		echo "WARNING: Slice timing file not created" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
+		rm /project/data/${patient}/func/${task_class}_slice_timing.txt
+	fi
 else
 	"WARNING: JSON file not found" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
 fi

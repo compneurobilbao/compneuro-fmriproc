@@ -48,8 +48,11 @@ do
         echo "*********************" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
         echo "$participant" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
         echo "*********************" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
- 
-        source /app/src/fmri_registration.sh $participant $timestamp_initial $prep_folder $task_class
+        if [ -f "/project/Preproc/${prep_folder}/${participant}/registration_folder/WM2standard_mask.nii.gz" ]; then
+            echo "Registration already performed" >> /project/log/fMRIpreproc_${timestamp_initial}.txt
+        else
+            source /app/src/fmri_registration.sh $participant $timestamp_initial $prep_folder $task_class
+        fi
         source /app/src/fmri_preproc.sh $participant $physReg_technique $movReg_technique $timestamp_initial $prep_folder $task_class
 
    fi

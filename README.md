@@ -56,7 +56,7 @@ make dev
 
 ### Usage
 ```bash
-/app/src/rsfmri_launcher.sh <physReg_technique> <movReg_technique> <task_class>
+/app/src/fmri_launcher.sh <physReg_technique> <movReg_technique> <task_class>
 ```
 
 For the input parameter `physReg_technique` you have two options:
